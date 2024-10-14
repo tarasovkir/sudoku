@@ -1,40 +1,20 @@
-pipeline {
-    agent any
+node ('agent1') {
+    def app
     stages {
         stage('Cloning Git') {
-            steps {
-                checkout scm
-            }
-        }
-        stage('SAST') {
-            steps {
-                sh 'echo SAST stage'
-            }
+            checkout scm
         }
         stage('Build-and-Tag') {
-            steps {
-                sh 'echo Build-and-Tag'
-            }
+            app = docker.build("tarasovkir/sudoku")
         }
         stage('Post-to-dockerhub') {
-            steps {
-                sh 'echo post to dockerhub repo'
-            }
-        }
-        stage('SECURITY-IMAGE-SCANNER') {
-            steps {
-                sh 'echo scun image for security'
+            docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_creds') {
+                app.push("latest")
             }
         }
         stage('Pull-image-server') {
-            steps {
-                sh 'echo pulling image ...'
-            }
-        }
-        stage('DAST') {
-            steps {
-                sh 'echo dast scan for security'
-            }
+            sh "docker-compose down"
+            sh "docker-compose up -d"
         }
     }
 }
