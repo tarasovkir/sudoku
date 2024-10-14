@@ -1,6 +1,5 @@
 node ('agent1') {
     def app
-    stages {
         stage('Cloning Git') {
             checkout scm
         }
@@ -17,4 +16,3 @@ node ('agent1') {
             sh "docker-compose up -d"
         }
     }
-}
