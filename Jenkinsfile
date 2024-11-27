@@ -6,7 +6,7 @@ node('agent1') {
         checkout scm
     }
 
-    stage('SAST') {
+    stage('SCA-SAST') {
         build 'SCA-SAST-SONARQUBE'
     }
 
